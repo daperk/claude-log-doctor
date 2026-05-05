@@ -1,0 +1,66 @@
+# claude-log-doctor — default configuration.
+#
+# Place a `claude-log-doctor.yaml` (or `.claude-log-doctor.yaml`) at your
+# project root to override. The doctor merges your overrides on top of these
+# defaults — top-level keys you don't set fall back here.
+
+# Where the doctor watches for log files. Glob (relative to project root or
+# absolute). Files are sorted by mtime; the most recent is scanned each pass.
+log_glob: "logs/*.log"
+
+# Maximum new lines processed per scan pass (caps runaway log growth).
+log_tail_lines: 5000
+
+# Files the doctor must NEVER edit, regardless of what Claude proposes.
+# Add anything sensitive: secrets, business-critical logic, generated files.
+# Paths are project-root-relative. The .env family is always blocked.
+protected_files:
+  - "config/secrets.py"
+  - "migrations/"
+
+# Substrings that must NEVER be removed from any file the doctor edits.
+# Useful for safety guards, feature flags, kill switches.
+protected_tokens:
+  - "DEBUG"
+  - "PRODUCTION"
+
+# File extensions the doctor is allowed to edit. Anything else is refused.
+allowed_extensions:
+  - .py
+  - .json
+  - .yaml
+  - .yml
+  - .toml
+
+# Risk thresholds for auto-apply.
+#   shrink_max_pct  : refuse if replacement shrinks file by more than this fraction
+#   grow_max_factor : refuse if replacement is larger than (max(2000, old * factor))
+shrink_max_pct: 0.40
+grow_max_factor: 5
+
+# Patterns that automatically classify a path as MANUAL_ONLY (never auto-applied,
+# never queued for one-tap approval — you handle these in your editor).
+# Add anything that's load-bearing for your business logic.
+manual_only_patterns:
+  - "core/"
+  - "billing/"
+
+# Maximum auto-fix attempts per unique error pattern before the doctor stops
+# trying (prevents thrashing on the same bug).
+max_fix_attempts_per_error: 2
+
+# Cap per Claude call.
+max_tokens_per_call: 4000
+
+# Extended thinking budget for fix proposals (Claude reasons internally).
+# Set to 0 to disable. Higher = better fixes but more cost.
+thinking_budget_tokens: 5000
+
+# Optional context lines around the file:line extracted from a traceback.
+context_span_lines: 30
+
+# Pricing for cost tracking. Override per-model if needed (USD per token).
+# Defaults match Opus 4.x list pricing as of 2026-04.
+pricing:
+  input_per_token: 0.000015   # $15 / 1M
+  output_per_token: 0.000075  # $75 / 1M

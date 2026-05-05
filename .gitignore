@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+.idea/
+.vscode/
+.DS_Store
+
+# Runtime state files written by the doctor
+state/
+*.bak
+
+# Logs (should never be committed)
+logs/
+*.log

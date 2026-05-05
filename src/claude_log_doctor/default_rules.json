@@ -1,0 +1,33 @@
+{
+  "_comment": "Default classification rules. First match wins per line. severity ∈ {INFO, WARNING, ERROR, CRITICAL}. Override by setting `rules_file` in your YAML config to point at your own file.",
+  "rules": [
+    {"pattern": "Connection refused",          "severity": "CRITICAL", "tag": "network"},
+    {"pattern": "out of memory|OOMKilled",     "severity": "CRITICAL", "tag": "oom"},
+    {"pattern": "No space left on device",     "severity": "CRITICAL", "tag": "disk-full"},
+    {"pattern": "database is locked",          "severity": "CRITICAL", "tag": "db-locked"},
+    {"pattern": "OperationalError",            "severity": "CRITICAL", "tag": "db"},
+    {"pattern": "segmentation fault",          "severity": "CRITICAL", "tag": "crash"},
+
+    {"pattern": "Traceback \\(most recent call last\\)", "severity": "ERROR", "tag": "traceback"},
+    {"pattern": "TypeError",                   "severity": "ERROR",    "tag": "typeerror"},
+    {"pattern": "AttributeError",              "severity": "ERROR",    "tag": "attrerror"},
+    {"pattern": "KeyError",                    "severity": "ERROR",    "tag": "keyerror"},
+    {"pattern": "ValueError",                  "severity": "ERROR",    "tag": "valueerror"},
+    {"pattern": "IndexError",                  "severity": "ERROR",    "tag": "indexerror"},
+    {"pattern": "ImportError",                 "severity": "ERROR",    "tag": "importerror"},
+    {"pattern": "ModuleNotFoundError",         "severity": "ERROR",    "tag": "missingmod"},
+    {"pattern": "NameError",                   "severity": "ERROR",    "tag": "nameerror"},
+    {"pattern": "ZeroDivisionError",           "severity": "ERROR",    "tag": "zerodiv"},
+    {"pattern": "AssertionError",              "severity": "ERROR",    "tag": "assertion"},
+    {"pattern": "RecursionError",              "severity": "ERROR",    "tag": "recursion"},
+    {"pattern": "JSONDecodeError",             "severity": "ERROR",    "tag": "json"},
+    {"pattern": "UnicodeDecodeError",          "severity": "ERROR",    "tag": "unicode"},
+    {"pattern": "FileNotFoundError",           "severity": "ERROR",    "tag": "fnf"},
+    {"pattern": "PermissionError",             "severity": "ERROR",    "tag": "perm"},
+
+    {"pattern": "rate limit|429 Too Many",     "severity": "WARNING",  "tag": "ratelimit"},
+    {"pattern": "timed out|timeout",           "severity": "WARNING",  "tag": "timeout"},
+    {"pattern": "deprecated|DeprecationWarning", "severity": "WARNING", "tag": "deprecated"},
+    {"pattern": "retrying",                    "severity": "WARNING",  "tag": "retry"}
+  ]
+}

@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-log-doctor"
+version = "0.1.0"
+description = "Self-healing log watchdog for Python services. Scans logs, classifies errors, asks Claude for minimal fixes, applies SAFE ones automatically with hard guardrails."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Daniel Pena" }]
+keywords = [
+    "anthropic",
+    "claude",
+    "log-monitoring",
+    "auto-repair",
+    "self-healing",
+    "ai-agents",
+    "observability",
+    "python",
+    "devops",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Bug Tracking",
+    "Topic :: System :: Logging",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "anthropic>=0.40.0",
+    "pyyaml>=6.0",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.5",
+]
+telegram = ["requests>=2.31"]
+slack = ["requests>=2.31"]
+
+[project.scripts]
+claude-log-doctor = "claude_log_doctor.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/daperk/claude-log-doctor"
+Repository = "https://github.com/daperk/claude-log-doctor"
+Issues = "https://github.com/daperk/claude-log-doctor/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claude_log_doctor"]
+
+[tool.hatch.build]
+include = [
+    "src/claude_log_doctor/default_rules.json",
+    "src/claude_log_doctor/default_config.yaml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/claude_log_doctor/repair.py" = ["E501"]
+"tests/*" = ["E501"]
