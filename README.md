@@ -10,6 +10,40 @@
 
 ---
 
+## Real-world example, in 30 seconds
+
+Your service crashes. In `logs/app.log`:
+
+```
+Traceback (most recent call last):
+  File "main.py", line 42, in handler
+    user.name.upper()
+AttributeError: 'NoneType' object has no attribute 'upper'
+```
+
+You run `claude-log-doctor scan` (or have it running in the background via `watch`). It:
+
+1. Reads only the **new** log lines since its last scan.
+2. Classifies the traceback as `ERROR / attrerror`.
+3. Pulls 30 lines of context around `main.py:42`.
+4. Asks Claude for a minimal exact-match search/replace fix.
+5. Claude returns:
+   ```json
+   {"needs_fix": true, "file": "main.py",
+    "search": "user.name.upper()",
+    "replace": "(user.name or 'anonymous').upper()",
+    "risk": "SAFE", "explanation": "guard against None"}
+   ```
+6. The doctor validates: search appears exactly once ✓, file isn't protected ✓, no protected tokens removed ✓, file size sane ✓.
+7. Backs up `main.py` and applies the patch.
+8. Logs to `state/audit.log`, prints a digest, notifies Telegram/Slack if configured.
+
+Total time: **~10 seconds, ~$0.05**. The bug is gone before you've even looked. If anything looks off, `claude-log-doctor rollback` undoes it.
+
+For anything riskier than a typo or null guard — function logic changes, conditional rewrites, anything in paths you marked sensitive — it doesn't touch a thing. It queues the proposal with an id and pings you for approval.
+
+---
+
 ## Why this exists
 
 Production Python services fail in boring, repetitive ways: a missing import after a refactor, a `None` slipping past a type hint, a typo in a log message that crashed the formatter. The fix is usually one line. The cost is finding the line.
